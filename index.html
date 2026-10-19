@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit Atlas</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg: #f4f2ed;
+    --surface: #fbfaf7;
+    --surface-2: #eeebe4;
+    --border: #e2ded4;
+    --text: #2e2c28;
+    --muted: #7b776e;
+    --faint: #a6a197;
+    --accent: #5e8a75;
+    --accent-strong: #4a705e;
+    --accent-soft: rgba(94, 138, 117, 0.12);
+    --danger: #b86b5e;
+    --shadow: 0 1px 2px rgba(40, 36, 28, 0.04), 0 8px 24px rgba(40, 36, 28, 0.05);
+    --radius: 16px;
+    --radius-sm: 10px;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #161819;
+      --surface: #1e2123;
+      --surface-2: #26292c;
+      --border: #2f3336;
+      --text: #e5e1d9;
+      --muted: #9a968d;
+      --faint: #6d6a64;
+      --accent: #8cb8a2;
+      --accent-strong: #a6cbb8;
+      --accent-soft: rgba(140, 184, 162, 0.13);
+      --danger: #d99486;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 8px 24px rgba(0, 0, 0, 0.18);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #161819;
+    --surface: #1e2123;
+    --surface-2: #26292c;
+    --border: #2f3336;
+    --text: #e5e1d9;
+    --muted: #9a968d;
+    --faint: #6d6a64;
+    --accent: #8cb8a2;
+    --accent-strong: #a6cbb8;
+    --accent-soft: rgba(140, 184, 162, 0.13);
+    --danger: #d99486;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 8px 24px rgba(0, 0, 0, 0.18);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color .25s ease, color .25s ease;
+  }
+  button, input, select { font: inherit; color: inherit; }
+
+  .wrap {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 40px 20px 64px;
+  }
+
+  /* Header */
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .mark {
+    width: 36px; height: 36px;
+    border-radius: 11px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    display: grid; place-items: center;
+  }
+  .brand h1 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 0;
+  }
+  .brand p { margin: 0; color: var(--muted); font-size: .85rem; }
+  .icon-btn {
+    width: 38px; height: 38px;
+    border-radius: 11px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    display: grid; place-items: center;
+    cursor: pointer;
+    transition: color .15s, border-color .15s, background .15s;
+  }
+  .icon-btn:hover { color: var(--text); border-color: var(--faint); }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 4px;
+    background: var(--surface-2);
+    border-radius: 13px;
+    width: fit-content;
+    max-width: 100%;
+    margin-bottom: 18px;
+  }
+  .tab {
+    border: 0;
+    background: transparent;
+    padding: 8px 16px;
+    border-radius: 10px;
+    color: var(--muted);
+    font-weight: 500;
+    font-size: .92rem;
+    cursor: pointer;
+    transition: background .15s, color .15s, box-shadow .15s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab[aria-selected="true"] {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+
+  /* Converter card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .converter { padding: 22px; margin-bottom: 18px; }
+  .converter .desc { margin: 0 0 16px; color: var(--muted); font-size: .9rem; }
+  .row-in {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+    gap: 12px;
+  }
+  label.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .field > span {
+    font-size: .74rem;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .control {
+    width: 100%;
+    height: 50px;
+    padding: 0 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--bg);
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .control:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  input.control.value {
+    font-size: 1.35rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+  input.control.invalid { border-color: var(--danger); }
+  select.control {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 40px;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a867d' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    text-overflow: ellipsis;
+  }
+  select.control option, select.control optgroup { background: var(--surface); color: var(--text); }
+  .hint { margin: 10px 0 0; font-size: .8rem; color: var(--faint); }
+
+  .status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    font-size: .84rem;
+    color: var(--muted);
+  }
+  .status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); flex: none; }
+  .status.live .dot { background: var(--accent); }
+  .status .grow { flex: 1 1 200px; }
+  .text-btn {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: 8px;
+    padding: 5px 12px;
+    font-size: .8rem;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--text);
+  }
+  .text-btn:hover { border-color: var(--faint); }
+  .text-btn:disabled { opacity: .5; cursor: default; }
+
+  /* Toolbar */
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .search {
+    position: relative;
+    flex: 1 1 260px;
+  }
+  .search svg {
+    position: absolute; left: 13px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--faint);
+    pointer-events: none;
+  }
+  .search input {
+    width: 100%;
+    height: 42px;
+    padding: 0 40px 0 38px;
+    border-radius: 11px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .search input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .search kbd {
+    position: absolute; right: 10px; top: 50%;
+    transform: translateY(-50%);
+    font-family: inherit;
+    font-size: .72rem;
+    color: var(--faint);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 1px 6px;
+  }
+  .prec {
+    display: flex; align-items: center; gap: 8px;
+    font-size: .84rem; color: var(--muted);
+  }
+  .prec select {
+    height: 42px;
+    padding: 0 34px 0 12px;
+    border-radius: 11px;
+    border: 1px solid var(--border);
+    background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%238a867d' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;
+    appearance: none; -webkit-appearance: none;
+    cursor: pointer;
+    outline: none;
+  }
+  .count { font-size: .82rem; color: var(--faint); margin-left: auto; }
+
+  /* Table */
+  .table-card { overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  thead th {
+    position: sticky; top: 0; z-index: 2;
+    background: var(--surface);
+    text-align: left;
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--faint);
+    padding: 14px 18px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  th.c-sym, td.sym { width: 120px; }
+  th.c-val, td.val { width: 34%; text-align: right; }
+  th.c-act, td.act { width: 52px; }
+  tbody tr.group th {
+    text-align: left;
+    padding: 22px 18px 8px;
+    font-size: .78rem;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: .02em;
+    background: var(--surface);
+  }
+  tbody tr.group th span { color: var(--faint); font-weight: 500; margin-left: 8px; }
+  tbody tr.unit { cursor: pointer; transition: background .12s; }
+  tbody tr.unit td {
+    padding: 11px 18px;
+    border-top: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  tbody tr.group + tr.unit td { border-top-color: transparent; }
+  tbody tr.unit:hover { background: var(--surface-2); }
+  tbody tr.unit.is-source { background: var(--accent-soft); }
+  tbody tr.unit.is-source td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+  td.name { font-weight: 500; overflow-wrap: anywhere; }
+  td.name .note {
+    display: block;
+    font-weight: 400;
+    font-size: .78rem;
+    color: var(--faint);
+    margin-top: 1px;
+  }
+  td.sym { color: var(--muted); font-size: .88rem; overflow-wrap: anywhere; }
+  td.val {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+  td.val sup { font-size: .7em; }
+  td.val .x { color: var(--faint); font-weight: 400; margin: 0 2px; }
+  td.act { text-align: right; padding-left: 0 !important; }
+  .copy {
+    width: 30px; height: 30px;
+    border: 0; border-radius: 8px;
+    background: transparent;
+    color: var(--faint);
+    display: inline-grid; place-items: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity .12s, background .12s, color .12s;
+  }
+  tr.unit:hover .copy, .copy:focus-visible { opacity: 1; }
+  .copy:hover { background: var(--surface); color: var(--text); }
+  .empty { padding: 48px 20px; text-align: center; color: var(--muted); }
+
+  footer {
+    margin-top: 28px;
+    font-size: .8rem;
+    color: var(--faint);
+    line-height: 1.65;
+  }
+  footer p { margin: 0 0 8px; }
+
+  .toast {
+    position: fixed;
+    left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+    transform: translate(-50%, 12px);
+    background: var(--text);
+    color: var(--bg);
+    padding: 9px 16px;
+    border-radius: 10px;
+    font-size: .85rem;
+    font-weight: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s, transform .2s;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 24px 16px 48px; }
+    .row-in { grid-template-columns: 1fr; }
+    th.c-sym, td.sym { width: 72px; }
+    th.c-val, td.val { width: 42%; }
+    th.c-act, td.act { width: 36px; }
+    thead th, tbody tr.unit td, tbody tr.group th { padding-left: 12px; padding-right: 12px; }
+    .copy { opacity: .6; }
+    .search kbd { display: none; }
+    .count { width: 100%; margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <div class="mark" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4 3 8l4 4"/><path d="M3 8h14"/><path d="m17 20 4-4-4-4"/><path d="M21 16H7"/></svg>
+      </div>
+      <div>
+        <h1>Unit Atlas</h1>
+        <p>Length, mass, time and currency — every unit at once</p>
+      </div>
+    </div>
+    <button class="icon-btn" id="themeBtn" title="Toggle light / dark" aria-label="Toggle light or dark theme">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+    </button>
+  </header>
+
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+
+  <section class="card converter">
+    <p class="desc" id="desc"></p>
+    <div class="row-in">
+      <label class="field">
+        <span>Amount</span>
+        <input class="control value" id="value" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="1">
+      </label>
+      <label class="field">
+        <span>From unit</span>
+        <select class="control" id="from"></select>
+      </label>
+    </div>
+    <p class="hint">Simple math works too, e.g. <code>5280*3</code> or <code>2^10</code>. Click any row below to make it the source unit.</p>
+    <div class="status" id="status" hidden>
+      <span class="dot"></span>
+      <span class="grow" id="statusText"></span>
+      <button class="text-btn" id="refreshBtn">Refresh rates</button>
+    </div>
+  </section>
+
+  <div class="toolbar">
+    <div class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="search" type="search" placeholder="Filter units…" autocomplete="off" spellcheck="false">
+      <kbd>/</kbd>
+    </div>
+    <label class="prec">
+      Precision
+      <select id="prec">
+        <option value="4">4 digits</option>
+        <option value="6">6 digits</option>
+        <option value="8">8 digits</option>
+        <option value="10">10 digits</option>
+        <option value="12">12 digits</option>
+        <option value="15">15 digits</option>
+      </select>
+    </label>
+    <span class="count" id="count"></span>
+  </div>
+
+  <section class="card table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Unit</th>
+          <th class="c-sym" id="symHead">Symbol</th>
+          <th class="c-val">Value</th>
+          <th class="c-act"></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </section>
+
+  <footer>
+    <p>Length, mass and time units use exact definitions where they exist (e.g. international inch = 25.4 mm, avoirdupois pound = 0.45359237 kg). Historical, regional and astronomical units use their commonly accepted standard values.</p>
+    <p>Current exchange rates are fetched live from open.er-api.com when you're online and fall back to a built-in approximate snapshot otherwise. Historical currencies convert through their official fixed rates into today's successor currency (e.g. 1 EUR = 1.95583 DEM, 1 TRY = 1,000,000 TRL). That is a legal equivalence, not an inflation adjustment. Ancient coinage such as the Roman denarius has no fixed legal link to any modern currency, so it isn't listed.</p>
+  </footer>
+</div>
+
+<div class="toast" id="toast">Copied</div>
+
+<script>
+(() => {
+  'use strict';
+
+  // ---------- Helpers ----------
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem('unitatlas:' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem('unitatlas:' + k, JSON.stringify(v)); } catch (e) {} }
+  };
+
+  const SI_PREFIXES = [
+    ['quetta', 'Q', 1e30], ['ronna', 'R', 1e27], ['yotta', 'Y', 1e24], ['zetta', 'Z', 1e21],
+    ['exa', 'E', 1e18], ['peta', 'P', 1e15], ['tera', 'T', 1e12], ['giga', 'G', 1e9],
+    ['mega', 'M', 1e6], ['kilo', 'k', 1e3], ['hecto', 'h', 1e2], ['deca', 'da', 1e1],
+    ['', '', 1],
+    ['deci', 'd', 1e-1], ['centi', 'c', 1e-2], ['milli', 'm', 1e-3], ['micro', 'µ', 1e-6],
+    ['nano', 'n', 1e-9], ['pico', 'p', 1e-12], ['femto', 'f', 1e-15], ['atto', 'a', 1e-18],
+    ['zepto', 'z', 1e-21], ['yocto', 'y', 1e-24], ['ronto', 'r', 1e-27], ['quecto', 'q', 1e-30]
+  ];
+  // Every SI-prefixed form of a unit. `scale` is the unprefixed unit's size in the category's base unit.
+  const si = (name, sym, scale = 1) => SI_PREFIXES.map(([p, s, f]) => [p + name, s + sym, f * scale]);
+
+  const INCH = 0.0254;
+  const LB = 0.45359237;
+  const DAY = 86400;
+  const JULIAN_YEAR = 365.25 * DAY;
+  const GREG_YEAR = 365.2425 * DAY;
+
+  // ---------- Unit data: [name, symbol, size in base unit, note?] ----------
+  const LENGTH = [
+    { name: 'Metric (SI)', units: si('meter', 'm') },
+    { name: 'Other metric & scientific', units: [
+      ['ångström', 'Å', 1e-10],
+      ['micron', 'µ', 1e-6],
+      ['fermi', 'fm', 1e-15],
+      ['Scandinavian mile (mil)', 'mil', 1e4],
+      ['Planck length', 'ℓP', 1.616255e-35],
+      ['Bohr radius', 'a₀', 5.29177210903e-11],
+      ['classical electron radius', 'rₑ', 2.8179403262e-15],
+      ['X unit', 'xu', 1.0021e-13, 'approximate, Cu Kα1'],
+    ]},
+    { name: 'Imperial & US customary', units: [
+      ['thou (mil)', 'th', INCH / 1000],
+      ['barleycorn', '', INCH / 3],
+      ['inch', 'in', INCH],
+      ['digit', '', 0.75 * INCH],
+      ['palm', '', 3 * INCH],
+      ['hand', 'hh', 4 * INCH],
+      ['shaftment', '', 6 * INCH],
+      ['link', 'li', 0.66 * 12 * INCH],
+      ['span', '', 9 * INCH],
+      ['foot', 'ft', 12 * INCH],
+      ['cubit', '', 18 * INCH],
+      ['yard', 'yd', 36 * INCH],
+      ['pace', '', 30 * INCH],
+      ['ell', '', 45 * INCH],
+      ['fathom', 'ftm', 72 * INCH],
+      ['rod (pole, perch)', 'rd', 16.5 * 12 * INCH],
+      ['chain', 'ch', 66 * 12 * INCH],
+      ['furlong', 'fur', 660 * 12 * INCH],
+      ['mile', 'mi', 1609.344],
+      ['league', 'lea', 3 * 1609.344],
+      ['US survey foot', 'ft (US)', 1200 / 3937],
+      ['US survey mile', 'mi (US)', 5280 * 1200 / 3937],
+    ]},
+    { name: 'Nautical', units: [
+      ['cable (international)', 'cb', 185.2],
+      ['nautical mile', 'NM', 1852],
+      ['nautical league', '', 3 * 1852],
+    ]},
+    { name: 'Typography & screen', units: [
+      ['twip', 'twip', INCH / 1440],
+      ['point (PostScript)', 'pt', INCH / 72],
+      ['Didot point', 'p', 0.376065e-3],
+      ['CSS pixel', 'px', INCH / 96],
+      ['agate', '', INCH / 14],
+      ['pica', 'pc', INCH / 6],
+    ]},
+    { name: 'Astronomical', units: [
+      ['Earth radius (mean)', 'R⊕', 6371000],
+      ['lunar distance', 'LD', 384399000],
+      ['light-second', 'ls', 299792458],
+      ['light-minute', 'lmin', 299792458 * 60],
+      ['light-hour', 'lh', 299792458 * 3600],
+      ['light-day', 'ld', 299792458 * 86400],
+      ['astronomical unit', 'au', 149597870700],
+      ['light-year', 'ly', 9460730472580800],
+      ['parsec', 'pc', 3.0856775814913673e16],
+      ['kiloparsec', 'kpc', 3.0856775814913673e19],
+      ['megaparsec', 'Mpc', 3.0856775814913673e22],
+      ['gigaparsec', 'Gpc', 3.0856775814913673e25],
+    ]},
+    { name: 'Historical & regional', units: [
+      ['Roman foot (pes)', '', 0.296],
+      ['Roman pace (passus)', '', 1.48],
+      ['Roman mile (mille passuum)', '', 1480],
+      ['Greek stadion', '', 185, 'Attic, approximate'],
+      ['Egyptian royal cubit', '', 0.524],
+      ['French ligne', '', 0.002256],
+      ['French foot (pied du roi)', '', 0.3248],
+      ['French toise', '', 1.949],
+      ['Spanish vara (Castilian)', '', 0.8359],
+      ['Russian vershok', '', 0.04445],
+      ['Russian arshin', '', 0.7112],
+      ['Russian sazhen', '', 2.1336],
+      ['Russian verst', '', 1066.8],
+      ['Chinese cun (寸)', '', 1 / 30],
+      ['Chinese chi (尺)', '', 1 / 3],
+      ['Chinese zhang (丈)', '', 10 / 3],
+      ['Chinese li (里)', '', 500],
+      ['Japanese sun (寸)', '', 1 / 33],
+      ['Japanese shaku (尺)', '', 10 / 33],
+      ['Japanese ken (間)', '', 60 / 33],
+      ['Japanese ri (里)', '', 12960 / 33],
+      ['Thai wa', '', 2],
+    ]},
+  ];
+
+  const MASS = [
+    { name: 'Metric (SI)', units: si('gram', 'g', 1e-3) },
+    { name: 'Other metric', units: [
+      ['metric point', 'pt', 2e-6],
+      ['metric carat', 'ct', 2e-4],
+      ['quintal', 'q', 100],
+      ['tonne (metric ton)', 't', 1000],
+      ['kilotonne', 'kt', 1e6],
+      ['megatonne', 'Mt', 1e9],
+      ['gigatonne', 'Gt', 1e12],
+    ]},
+    { name: 'Avoirdupois (Imperial & US)', units: [
+      ['grain', 'gr', LB / 7000],
+      ['dram', 'dr', LB / 256],
+      ['ounce', 'oz', LB / 16],
+      ['pound', 'lb', LB],
+      ['stone', 'st', 14 * LB],
+      ['quarter', 'qr', 28 * LB],
+      ['short hundredweight', 'cwt (US)', 100 * LB],
+      ['long hundredweight', 'cwt (UK)', 112 * LB],
+      ['kip', 'kip', 1000 * LB],
+      ['short ton (US)', 'tn', 2000 * LB],
+      ['long ton (UK)', 'LT', 2240 * LB],
+      ['slug', 'slug', 14.59390293720636],
+    ]},
+    { name: 'Troy & apothecaries', units: [
+      ['scruple', '℈', LB / 7000 * 20],
+      ['pennyweight', 'dwt', LB / 7000 * 24],
+      ["apothecaries' dram", 'ʒ', LB / 7000 * 60],
+      ['troy ounce', 'oz t', LB / 7000 * 480],
+      ['troy pound', 'lb t', LB / 7000 * 5760],
+    ]},
+    { name: 'Atomic & physics', units: [
+      ['electronvolt / c²', 'eV/c²', 1.78266192e-36],
+      ['electron mass', 'mₑ', 9.1093837015e-31],
+      ['dalton (atomic mass unit)', 'Da', 1.66053906660e-27],
+      ['proton mass', 'mₚ', 1.67262192369e-27],
+      ['neutron mass', 'mₙ', 1.67492749804e-27],
+      ['Planck mass', 'mP', 2.176434e-8],
+    ]},
+    { name: 'Astronomical', units: [
+      ['Moon mass', 'M☾', 7.342e22],
+      ['Earth mass', 'M⊕', 5.9722e24],
+      ['Jupiter mass', 'MJ', 1.89813e27],
+      ['solar mass', 'M☉', 1.98847e30],
+    ]},
+    { name: 'Historical & regional', units: [
+      ['Roman uncia', '', 0.02725],
+      ['Roman libra', '', 0.327],
+      ['Cologne mark', '', 0.233856],
+      ['Russian zolotnik', '', 0.0042657],
+      ['Russian funt', '', 0.40951241],
+      ['Russian pood', '', 16.3804964],
+      ['Indian tola', '', 0.0116638038],
+      ['Indian seer', '', 0.93310430],
+      ['Indian maund', '', 37.3241721],
+      ['Chinese qian (钱)', '', 0.005],
+      ['Chinese liang (两)', '', 0.05],
+      ['Chinese jin (斤)', '', 0.5],
+      ['Hong Kong tael', '', 0.0377993638],
+      ['Hong Kong catty', '', 0.60478982],
+      ['picul', '', 60.478982],
+      ['Japanese monme (匁)', '', 0.00375],
+      ['Japanese kin (斤)', '', 0.6],
+      ['Japanese kan (貫)', '', 3.75],
+      ['Thai baht (weight)', '', 0.015],
+    ]},
+  ];
+
+  const TIME = [
+    { name: 'Metric (SI)', units: si('second', 's') },
+    { name: 'Common', units: [
+      ['minute', 'min', 60],
+      ['hour', 'h', 3600],
+      ['day', 'd', DAY],
+      ['week', 'wk', 7 * DAY],
+      ['fortnight', '', 14 * DAY],
+      ['month (average)', 'mo', GREG_YEAR / 12, 'Gregorian average, 30.436875 d'],
+      ['quarter (average)', '', GREG_YEAR / 4],
+      ['common year', 'yr', 365 * DAY],
+      ['leap year', '', 366 * DAY],
+      ['Gregorian year', 'a', GREG_YEAR],
+      ['Julian year', 'a', JULIAN_YEAR],
+      ['decade', '', 10 * GREG_YEAR],
+      ['century', '', 100 * GREG_YEAR],
+      ['millennium', '', 1000 * GREG_YEAR],
+      ['megaannum', 'Ma', 1e6 * JULIAN_YEAR],
+      ['gigaannum', 'Ga', 1e9 * JULIAN_YEAR],
+    ]},
+    { name: 'Astronomical', units: [
+      ['sidereal day', '', 86164.0905],
+      ['Mars sol', 'sol', 88775.244],
+      ['sidereal month', '', 27.321661 * DAY],
+      ['synodic (lunar) month', '', 29.530589 * DAY],
+      ['tropical year', '', 365.24219 * DAY],
+      ['sidereal year', '', 365.256363004 * DAY],
+      ['anomalistic year', '', 365.259636 * DAY],
+      ['galactic year', '', 230e6 * JULIAN_YEAR, 'approximate'],
+    ]},
+    { name: 'Scientific', units: [
+      ['Planck time', 'tP', 5.391247e-44],
+      ['jiffy (physics)', '', 3.3356409519815e-24, 'light travel time across 1 fm'],
+      ['atomic unit of time', 'ℏ/Eₕ', 2.4188843265857e-17],
+      ['svedberg', 'S', 1e-13],
+      ['shake', '', 1e-8],
+      ['jiffy (electronics)', '', 1 / 60, 'one 60 Hz AC cycle'],
+    ]},
+    { name: 'Decimal & digital', units: [
+      ['decimal second', '', 0.864, 'French Revolutionary'],
+      ['decimal minute', '', 86.4],
+      ['Swatch .beat', '@', 86.4],
+      ['decimal hour', '', 8640],
+    ]},
+    { name: 'Historical & cultural', units: [
+      ['helek', '', 10 / 3, 'Hebrew calendar'],
+      ['moment', '', 90, 'medieval'],
+      ['ke (刻)', '', 864, 'Chinese, 1/100 day'],
+      ['nundinal cycle', '', 8 * DAY, 'Roman market week'],
+      ['olympiad', '', 4 * JULIAN_YEAR],
+      ['lustrum', '', 5 * JULIAN_YEAR],
+      ['indiction', '', 15 * JULIAN_YEAR],
+      ['score', '', 20 * JULIAN_YEAR],
+      ['jubilee', '', 50 * JULIAN_YEAR],
+    ]},
+  ];
+
+  // ---------- Currency data ----------
+  // Current currencies: [code, name, approx. units per 1 USD (offline snapshot), region]
+  const CURRENT = [
+    ['USD', 'US dollar', 1, 'Americas'], ['CAD', 'Canadian dollar', 1.38, 'Americas'],
+    ['MXN', 'Mexican peso', 18.4, 'Americas'], ['BRL', 'Brazilian real', 5.4, 'Americas'],
+    ['ARS', 'Argentine peso', 1450, 'Americas'], ['CLP', 'Chilean peso', 950, 'Americas'],
+    ['COP', 'Colombian peso', 3900, 'Americas'], ['PEN', 'Peruvian sol', 3.45, 'Americas'],
+    ['UYU', 'Uruguayan peso', 40, 'Americas'], ['PYG', 'Paraguayan guaraní', 7100, 'Americas'],
+    ['BOB', 'Bolivian boliviano', 6.91, 'Americas'], ['VES', 'Venezuelan bolívar', 200, 'Americas'],
+    ['GYD', 'Guyanese dollar', 209, 'Americas'], ['SRD', 'Surinamese dollar', 38.5, 'Americas'],
+    ['TTD', 'Trinidad & Tobago dollar', 6.78, 'Americas'], ['JMD', 'Jamaican dollar', 160, 'Americas'],
+    ['BBD', 'Barbadian dollar', 2, 'Americas'], ['BSD', 'Bahamian dollar', 1, 'Americas'],
+    ['BZD', 'Belize dollar', 2, 'Americas'], ['XCD', 'East Caribbean dollar', 2.7, 'Americas'],
+    ['HTG', 'Haitian gourde', 131, 'Americas'], ['DOP', 'Dominican peso', 63, 'Americas'],
+    ['CUP', 'Cuban peso', 24, 'Americas'], ['GTQ', 'Guatemalan quetzal', 7.67, 'Americas'],
+    ['HNL', 'Honduran lempira', 26.2, 'Americas'], ['NIO', 'Nicaraguan córdoba', 36.8, 'Americas'],
+    ['CRC', 'Costa Rican colón', 503, 'Americas'], ['PAB', 'Panamanian balboa', 1, 'Americas'],
+    ['AWG', 'Aruban florin', 1.79, 'Americas'], ['XCG', 'Caribbean guilder', 1.79, 'Americas'],
+    ['BMD', 'Bermudian dollar', 1, 'Americas'], ['KYD', 'Cayman Islands dollar', 0.833, 'Americas'],
+    ['FKP', 'Falkland Islands pound', 0.75, 'Americas'],
+
+    ['EUR', 'Euro', 0.86, 'Europe'], ['GBP', 'Pound sterling', 0.75, 'Europe'],
+    ['CHF', 'Swiss franc', 0.80, 'Europe'], ['SEK', 'Swedish krona', 9.4, 'Europe'],
+    ['NOK', 'Norwegian krone', 10.1, 'Europe'], ['DKK', 'Danish krone', 6.42, 'Europe'],
+    ['ISK', 'Icelandic króna', 122, 'Europe'], ['PLN', 'Polish złoty', 3.65, 'Europe'],
+    ['CZK', 'Czech koruna', 20.9, 'Europe'], ['HUF', 'Hungarian forint', 335, 'Europe'],
+    ['RON', 'Romanian leu', 4.37, 'Europe'], ['RSD', 'Serbian dinar', 100.5, 'Europe'],
+    ['MKD', 'Macedonian denar', 52.9, 'Europe'], ['ALL', 'Albanian lek', 83, 'Europe'],
+    ['BAM', 'Bosnia-Herzegovina convertible mark', 1.68, 'Europe'], ['MDL', 'Moldovan leu', 16.9, 'Europe'],
+    ['UAH', 'Ukrainian hryvnia', 41.5, 'Europe'], ['BYN', 'Belarusian ruble', 3.0, 'Europe'],
+    ['RUB', 'Russian ruble', 81, 'Europe'], ['GEL', 'Georgian lari', 2.71, 'Europe'],
+    ['AMD', 'Armenian dram', 384, 'Europe'], ['AZN', 'Azerbaijani manat', 1.70, 'Europe'],
+    ['TRY', 'Turkish lira', 41.8, 'Europe'], ['GIP', 'Gibraltar pound', 0.75, 'Europe'],
+    ['IMP', 'Manx pound', 0.75, 'Europe'], ['JEP', 'Jersey pound', 0.75, 'Europe'],
+    ['GGP', 'Guernsey pound', 0.75, 'Europe'],
+
+    ['JPY', 'Japanese yen', 150, 'Asia & Pacific'], ['CNY', 'Chinese yuan (renminbi)', 7.12, 'Asia & Pacific'],
+    ['HKD', 'Hong Kong dollar', 7.78, 'Asia & Pacific'], ['MOP', 'Macanese pataca', 8.01, 'Asia & Pacific'],
+    ['TWD', 'New Taiwan dollar', 30.5, 'Asia & Pacific'], ['KRW', 'South Korean won', 1400, 'Asia & Pacific'],
+    ['KPW', 'North Korean won', 900, 'Asia & Pacific'], ['MNT', 'Mongolian tögrög', 3580, 'Asia & Pacific'],
+    ['INR', 'Indian rupee', 88, 'Asia & Pacific'], ['PKR', 'Pakistani rupee', 281, 'Asia & Pacific'],
+    ['BDT', 'Bangladeshi taka', 122, 'Asia & Pacific'], ['LKR', 'Sri Lankan rupee', 302, 'Asia & Pacific'],
+    ['NPR', 'Nepalese rupee', 141, 'Asia & Pacific'], ['BTN', 'Bhutanese ngultrum', 88, 'Asia & Pacific'],
+    ['MVR', 'Maldivian rufiyaa', 15.4, 'Asia & Pacific'], ['AFN', 'Afghan afghani', 68, 'Asia & Pacific'],
+    ['KZT', 'Kazakhstani tenge', 540, 'Asia & Pacific'], ['UZS', 'Uzbekistani soʻm', 12100, 'Asia & Pacific'],
+    ['KGS', 'Kyrgyzstani som', 87.4, 'Asia & Pacific'], ['TJS', 'Tajikistani somoni', 9.3, 'Asia & Pacific'],
+    ['TMT', 'Turkmenistani manat', 3.5, 'Asia & Pacific'], ['MMK', 'Myanmar kyat', 2100, 'Asia & Pacific'],
+    ['THB', 'Thai baht', 32.5, 'Asia & Pacific'], ['VND', 'Vietnamese đồng', 26300, 'Asia & Pacific'],
+    ['LAK', 'Lao kip', 21700, 'Asia & Pacific'], ['KHR', 'Cambodian riel', 4010, 'Asia & Pacific'],
+    ['MYR', 'Malaysian ringgit', 4.22, 'Asia & Pacific'], ['SGD', 'Singapore dollar', 1.29, 'Asia & Pacific'],
+    ['BND', 'Brunei dollar', 1.29, 'Asia & Pacific'], ['IDR', 'Indonesian rupiah', 16500, 'Asia & Pacific'],
+    ['PHP', 'Philippine peso', 58, 'Asia & Pacific'], ['AUD', 'Australian dollar', 1.53, 'Asia & Pacific'],
+    ['NZD', 'New Zealand dollar', 1.72, 'Asia & Pacific'], ['FJD', 'Fijian dollar', 2.27, 'Asia & Pacific'],
+    ['PGK', 'Papua New Guinean kina', 4.2, 'Asia & Pacific'], ['SBD', 'Solomon Islands dollar', 8.2, 'Asia & Pacific'],
+    ['VUV', 'Vanuatu vatu', 120, 'Asia & Pacific'], ['WST', 'Samoan tālā', 2.75, 'Asia & Pacific'],
+    ['TOP', 'Tongan paʻanga', 2.37, 'Asia & Pacific'], ['XPF', 'CFP franc', 102.6, 'Asia & Pacific'],
+
+    ['AED', 'UAE dirham', 3.6725, 'Middle East'], ['SAR', 'Saudi riyal', 3.75, 'Middle East'],
+    ['QAR', 'Qatari riyal', 3.64, 'Middle East'], ['KWD', 'Kuwaiti dinar', 0.306, 'Middle East'],
+    ['BHD', 'Bahraini dinar', 0.376, 'Middle East'], ['OMR', 'Omani rial', 0.3845, 'Middle East'],
+    ['JOD', 'Jordanian dinar', 0.709, 'Middle East'], ['ILS', 'Israeli new shekel', 3.33, 'Middle East'],
+    ['LBP', 'Lebanese pound', 89500, 'Middle East'], ['SYP', 'Syrian pound', 13000, 'Middle East'],
+    ['IQD', 'Iraqi dinar', 1310, 'Middle East'], ['IRR', 'Iranian rial', 42000, 'Middle East'],
+    ['YER', 'Yemeni rial', 240, 'Middle East'],
+
+    ['EGP', 'Egyptian pound', 48.5, 'Africa'], ['MAD', 'Moroccan dirham', 9.1, 'Africa'],
+    ['DZD', 'Algerian dinar', 130, 'Africa'], ['TND', 'Tunisian dinar', 2.95, 'Africa'],
+    ['LYD', 'Libyan dinar', 5.45, 'Africa'], ['SDG', 'Sudanese pound', 600, 'Africa'],
+    ['SSP', 'South Sudanese pound', 4500, 'Africa'], ['ETB', 'Ethiopian birr', 140, 'Africa'],
+    ['ERN', 'Eritrean nakfa', 15, 'Africa'], ['DJF', 'Djiboutian franc', 177.7, 'Africa'],
+    ['SOS', 'Somali shilling', 571, 'Africa'], ['KES', 'Kenyan shilling', 129, 'Africa'],
+    ['UGX', 'Ugandan shilling', 3500, 'Africa'], ['TZS', 'Tanzanian shilling', 2450, 'Africa'],
+    ['RWF', 'Rwandan franc', 1440, 'Africa'], ['BIF', 'Burundian franc', 2970, 'Africa'],
+    ['NGN', 'Nigerian naira', 1500, 'Africa'], ['GHS', 'Ghanaian cedi', 11, 'Africa'],
+    ['XOF', 'West African CFA franc', 565, 'Africa'], ['XAF', 'Central African CFA franc', 565, 'Africa'],
+    ['CVE', 'Cape Verdean escudo', 95, 'Africa'], ['GMD', 'Gambian dalasi', 72, 'Africa'],
+    ['GNF', 'Guinean franc', 8680, 'Africa'], ['LRD', 'Liberian dollar', 180, 'Africa'],
+    ['SLE', 'Sierra Leonean leone', 23, 'Africa'], ['MRU', 'Mauritanian ouguiya', 40, 'Africa'],
+    ['ZAR', 'South African rand', 17.6, 'Africa'], ['BWP', 'Botswana pula', 13.6, 'Africa'],
+    ['NAD', 'Namibian dollar', 17.6, 'Africa'], ['LSL', 'Lesotho loti', 17.6, 'Africa'],
+    ['SZL', 'Eswatini lilangeni', 17.6, 'Africa'], ['MZN', 'Mozambican metical', 63.9, 'Africa'],
+    ['ZMW', 'Zambian kwacha', 23.5, 'Africa'], ['MWK', 'Malawian kwacha', 1740, 'Africa'],
+    ['ZWG', 'Zimbabwe Gold', 26.8, 'Africa'], ['AOA', 'Angolan kwanza', 920, 'Africa'],
+    ['CDF', 'Congolese franc', 2850, 'Africa'], ['MGA', 'Malagasy ariary', 4450, 'Africa'],
+    ['MUR', 'Mauritian rupee', 45.5, 'Africa'], ['SCR', 'Seychellois rupee', 14.3, 'Africa'],
+    ['KMF', 'Comorian franc', 423, 'Africa'], ['STN', 'São Tomé & Príncipe dobra', 21.1, 'Africa'],
+    ['SHP', 'Saint Helena pound', 0.75, 'Africa'],
+
+    ['XDR', 'IMF Special Drawing Right', 0.73, 'Supranational'],
+  ];
+
+  // Historical currencies: [id, name, years, successor id, 1 unit = mult × successor, note?]
+  // Ids that are 3 capital letters are shown as ISO codes; others are internal only.
+  const HISTORICAL = [
+    { name: 'Historical — replaced by the euro', units: [
+      ['DEM', 'German mark', '1948–2001', 'EUR', 1 / 1.95583],
+      ['FRF', 'French franc', '1960–2001', 'EUR', 1 / 6.55957],
+      ['ITL', 'Italian lira', '1861–2001', 'EUR', 1 / 1936.27],
+      ['ESP', 'Spanish peseta', '1869–2001', 'EUR', 1 / 166.386],
+      ['PTE', 'Portuguese escudo', '1911–2001', 'EUR', 1 / 200.482],
+      ['NLG', 'Dutch guilder', '1810–2001', 'EUR', 1 / 2.20371],
+      ['BEF', 'Belgian franc', '1832–2001', 'EUR', 1 / 40.3399],
+      ['LUF', 'Luxembourgish franc', '1854–2001', 'EUR', 1 / 40.3399],
+      ['ATS', 'Austrian schilling', '1945–2001', 'EUR', 1 / 13.7603],
+      ['FIM', 'Finnish markka', '1963–2001', 'EUR', 1 / 5.94573],
+      ['IEP', 'Irish pound', '1938–2001', 'EUR', 1 / 0.787564],
+      ['GRD', 'Greek drachma', '1954–2001', 'EUR', 1 / 340.75],
+      ['MCF', 'Monégasque franc', '1960–2001', 'FRF', 1],
+      ['VAL', 'Vatican lira', '1929–2001', 'ITL', 1],
+      ['SML', 'Sammarinese lira', '1972–2001', 'ITL', 1],
+      ['XEU', 'European Currency Unit (ECU)', '1979–1998', 'EUR', 1],
+      ['SIT', 'Slovenian tolar', '1991–2006', 'EUR', 1 / 239.64],
+      ['CYP', 'Cypriot pound', '1879–2007', 'EUR', 1 / 0.585274],
+      ['MTL', 'Maltese lira', '1972–2007', 'EUR', 1 / 0.4293],
+      ['SKK', 'Slovak koruna', '1993–2008', 'EUR', 1 / 30.126],
+      ['EEK', 'Estonian kroon', '1992–2010', 'EUR', 1 / 15.6466],
+      ['LVL', 'Latvian lats', '1993–2013', 'EUR', 1 / 0.702804],
+      ['LTL', 'Lithuanian litas', '1993–2014', 'EUR', 1 / 3.4528],
+      ['HRK', 'Croatian kuna', '1994–2022', 'EUR', 1 / 7.5345],
+      ['BGN', 'Bulgarian lev', '1999–2025', 'EUR', 1 / 1.95583],
+    ]},
+    { name: 'Historical — British pre-decimal (£sd)', units: [
+      ['GB_FARTHING', 'farthing', 'until 1960', 'GBP', 1 / 960, '¼ penny'],
+      ['GB_HALFPENNY', 'halfpenny (old)', 'until 1971', 'GBP', 1 / 480],
+      ['GB_PENNY', 'penny (old)', 'until 1971', 'GBP', 1 / 240, '1d = 1/240 pound'],
+      ['GB_THREEPENCE', 'threepence', 'until 1971', 'GBP', 3 / 240],
+      ['GB_GROAT', 'groat', 'medieval–1856', 'GBP', 4 / 240, '4d'],
+      ['GB_SIXPENCE', 'sixpence', 'until 1971', 'GBP', 6 / 240],
+      ['GB_SHILLING', 'shilling', 'until 1971', 'GBP', 12 / 240, '1s = 12d'],
+      ['GB_FLORIN', 'florin', '1849–1971', 'GBP', 24 / 240, '2s'],
+      ['GB_HALFCROWN', 'half crown', 'until 1970', 'GBP', 30 / 240, '2s 6d'],
+      ['GB_CROWN', 'crown', 'until 1971', 'GBP', 60 / 240, '5s'],
+      ['GB_NOBLE', 'noble', 'medieval', 'GBP', 80 / 240, '6s 8d'],
+      ['GB_HALFSOV', 'half sovereign', 'until 1971', 'GBP', 0.5, '10s'],
+      ['GB_MARK', 'mark (money of account)', 'medieval', 'GBP', 160 / 240, '13s 4d'],
+      ['GB_SOVEREIGN', 'sovereign', 'face value', 'GBP', 1, '20s'],
+      ['GB_GUINEA', 'guinea', '1717–1971 rate', 'GBP', 252 / 240, '21s'],
+      ['IN_PIE', 'Indian pie', 'until 1957', 'INR', 1 / 192],
+      ['IN_PICE', 'Indian pice', 'until 1957', 'INR', 1 / 64],
+      ['IN_ANNA', 'Indian anna', 'until 1957', 'INR', 1 / 16],
+    ]},
+    { name: 'Historical — Commonwealth pounds', units: [
+      ['AU_POUND', 'Australian pound', '1910–1966', 'AUD', 2],
+      ['NZ_POUND', 'New Zealand pound', '1933–1967', 'NZD', 2],
+      ['ZA_POUND', 'South African pound', '1825–1961', 'ZAR', 2],
+      ['JM_POUND', 'Jamaican pound', '1840–1969', 'JMD', 2],
+      ['NG_POUND', 'Nigerian pound', '1958–1973', 'NGN', 2],
+      ['FJ_POUND', 'Fijian pound', '1873–1969', 'FJD', 2],
+    ]},
+    { name: 'Historical — Europe (redenominated or replaced)', units: [
+      ['DE_PAPIERMARK', 'German Papiermark', '1914–1923', 'DE_REICHSMARK', 1e-12],
+      ['DE_RENTENMARK', 'German Rentenmark', '1923–1948', 'DE_REICHSMARK', 1],
+      ['DE_REICHSMARK', 'German Reichsmark', '1924–1948', 'DEM', 0.1, 'general 10:1 rate'],
+      ['DDM', 'East German mark', '1948–1990', 'DEM', 0.5, 'general 2:1 rate'],
+      ['FR_OLDFRANC', 'French franc (old)', 'until 1959', 'FRF', 0.01],
+      ['FI_OLDMARKKA', 'Finnish markka (old)', '1860–1962', 'FIM', 0.01],
+      ['ISJ', 'Icelandic króna (old)', '1918–1980', 'ISK', 0.01],
+      ['HU_PENGO', 'Hungarian pengő', '1927–1946', 'HUF', 1 / 4e29],
+      ['PLZ', 'Polish złoty (old)', '1950–1994', 'PLN', 1e-4],
+      ['ROL', 'Romanian leu (old)', '1952–2005', 'RON', 1e-4],
+      ['BGL', 'Bulgarian lev (old)', '1962–1999', 'BGN', 1e-3],
+      ['TRL', 'Turkish lira (old)', '1923–2005', 'TRY', 1e-6],
+      ['CSK', 'Czechoslovak koruna', '1953–1993', 'CZK', 1],
+      ['YUM', 'Yugoslav dinar', '1994–2003', 'CSD', 1],
+      ['CSD', 'Serbian dinar (2003)', '2003–2006', 'RSD', 1],
+      ['HRD', 'Croatian dinar', '1991–1994', 'HRK', 1e-3],
+      ['SUR', 'Soviet ruble', '1961–1991', 'RUR', 1],
+      ['RUR', 'Russian ruble (old)', '1992–1997', 'RUB', 1e-3],
+      ['BYB', 'Belarusian ruble (1992)', '1992–1999', 'BYR', 1e-3],
+      ['BYR', 'Belarusian ruble (2000)', '2000–2016', 'BYN', 1e-4],
+      ['UAK', 'Ukrainian karbovanets', '1992–1996', 'UAH', 1e-5],
+      ['GEK', 'Georgian kuponi', '1993–1995', 'GEL', 1e-6],
+      ['LTT', 'Lithuanian talonas', '1991–1993', 'LTL', 0.01],
+      ['LVR', 'Latvian rublis', '1992–1993', 'LVL', 1 / 200],
+      ['AZM', 'Azerbaijani manat (old)', '1992–2005', 'AZN', 1 / 5000],
+      ['ANG', 'Netherlands Antillean guilder', '1940–2025', 'XCG', 1],
+    ]},
+    { name: 'Historical — Asia & Middle East', units: [
+      ['CN_OLDRMB', 'Chinese renminbi (old)', '1948–1955', 'CNY', 1e-4],
+      ['TW_OLDTWD', 'Old Taiwan dollar', '1946–1949', 'TWD', 1 / 40000],
+      ['KRH', 'South Korean hwan', '1953–1962', 'KRW', 0.1],
+      ['AFA', 'Afghan afghani (old)', '1925–2002', 'AFN', 1e-3],
+      ['TJR', 'Tajik ruble', '1995–2000', 'TJS', 1e-3],
+      ['TMM', 'Turkmen manat (old)', '1993–2008', 'TMT', 1 / 5000],
+      ['ILP', 'Israeli lira', '1952–1980', 'ILR', 0.1],
+      ['ILR', 'Israeli shekel (old)', '1980–1985', 'ILS', 1e-3],
+    ]},
+    { name: 'Historical — Americas', units: [
+      ['MXP', 'Mexican peso (old)', 'until 1992', 'MXN', 1e-3],
+      ['ARM', 'Argentine peso moneda nacional', '1881–1969', 'ARL', 0.01],
+      ['ARL', 'Argentine peso ley', '1970–1983', 'ARP', 1e-4],
+      ['ARP', 'Argentine peso argentino', '1983–1985', 'ARA', 1e-3],
+      ['ARA', 'Argentine austral', '1985–1991', 'ARS', 1e-4],
+      ['BRB', 'Brazilian cruzeiro (1970)', '1970–1986', 'BRC', 1e-3],
+      ['BRC', 'Brazilian cruzado', '1986–1989', 'BRN', 1e-3],
+      ['BRN', 'Brazilian cruzado novo', '1989–1990', 'BRE', 1],
+      ['BRE', 'Brazilian cruzeiro (1990)', '1990–1993', 'BRR', 1e-3],
+      ['BRR', 'Brazilian cruzeiro real', '1993–1994', 'BRL', 1 / 2750],
+      ['PES', 'Peruvian sol (old)', '1863–1985', 'PEI', 1e-3],
+      ['PEI', 'Peruvian inti', '1985–1991', 'PEN', 1e-6],
+      ['BOP', 'Bolivian peso', '1963–1986', 'BOB', 1e-6],
+      ['CLE', 'Chilean escudo', '1960–1975', 'CLP', 1e-3],
+      ['UYP', 'Uruguayan nuevo peso', '1975–1993', 'UYU', 1e-3],
+      ['VEB', 'Venezuelan bolívar (old)', '1879–2007', 'VEF', 1e-3],
+      ['VEF', 'Venezuelan bolívar fuerte', '2008–2018', 'VE_SOBERANO', 1e-5],
+      ['VE_SOBERANO', 'Venezuelan bolívar soberano', '2018–2021', 'VES', 1e-6],
+      ['CUC', 'Cuban convertible peso', '1994–2021', 'CUP', 24],
+    ]},
+    { name: 'Historical — Africa', units: [
+      ['GHC', 'Ghanaian cedi (old)', '1967–2007', 'GHS', 1e-4],
+      ['MZM', 'Mozambican metical (old)', '1980–2006', 'MZN', 1e-3],
+      ['ZMK', 'Zambian kwacha (old)', '1968–2012', 'ZMW', 1e-3],
+      ['MRO', 'Mauritanian ouguiya (old)', '1973–2017', 'MRU', 0.1],
+      ['STD', 'São Tomé dobra (old)', '1977–2017', 'STN', 1e-3],
+      ['SDP', 'Sudanese pound (old)', '1956–1992', 'SDD', 0.1],
+      ['SDD', 'Sudanese dinar', '1992–2007', 'SDG', 0.01],
+      ['SLL', 'Sierra Leonean leone (old)', '1964–2022', 'SLE', 1e-3],
+      ['UGS', 'Ugandan shilling (old)', '1966–1987', 'UGX', 0.01],
+      ['MGF', 'Malagasy franc', '1963–2005', 'MGA', 0.2],
+      ['ZRZ', 'Zairean zaire', '1967–1993', 'ZRN', 1 / 3e6],
+      ['ZRN', 'Zairean new zaire', '1993–1998', 'CDF', 1e-5],
+      ['GWP', 'Guinea-Bissau peso', '1975–1997', 'XOF', 1 / 65],
+      ['ZWD', 'Zimbabwean dollar (1st)', '1980–2006', 'ZWN', 1e-3],
+      ['ZWN', 'Zimbabwean dollar (2nd)', '2006–2008', 'ZWR', 1e-10],
+      ['ZWR', 'Zimbabwean dollar (3rd)', '2008–2009', 'ZWL', 1e-12],
+      ['ZWL', 'Zimbabwean dollar (4th)', '2009–2024', 'ZWG', 1 / 2498.7242],
+    ]},
+    { name: 'Subunits & coins', units: [
+      ['US_MILL', 'US mill', '', 'USD', 0.001],
+      ['US_CENT', 'US cent', '', 'USD', 0.01],
+      ['US_NICKEL', 'US nickel', '', 'USD', 0.05],
+      ['US_DIME', 'US dime', '', 'USD', 0.1],
+      ['EU_CENT', 'euro cent', '', 'EUR', 0.01],
+      ['GB_NEWPENNY', 'penny (decimal)', '', 'GBP', 0.01],
+      ['JP_RIN', 'Japanese rin', 'historical', 'JPY', 0.001],
+      ['JP_SEN', 'Japanese sen', 'historical', 'JPY', 0.01],
+      ['CN_FEN', 'Chinese fen', '', 'CNY', 0.01],
+      ['CN_JIAO', 'Chinese jiao', '', 'CNY', 0.1],
+      ['IN_PAISA', 'Indian paisa', '', 'INR', 0.01],
+      ['RU_KOPEK', 'Russian kopek', '', 'RUB', 0.01],
+    ]},
+  ];
+
+  const SNAPSHOT_RATES = Object.fromEntries(CURRENT.map(([c, , r]) => [c, r]));
+  let rates = { ...SNAPSHOT_RATES };
+
+  // Value of one unit of each currency, in USD.
+  function buildCurrencyGroups() {
+    const usd = {};
+    CURRENT.forEach(([c]) => { usd[c] = 1 / rates[c]; });
+    const hist = {};
+    HISTORICAL.forEach((g) => g.units.forEach((u) => { hist[u[0]] = u; }));
+    const resolve = (id, depth = 0) => {
+      if (usd[id] != null) return usd[id];
+      const h = hist[id];
+      if (!h || depth > 20) return NaN;
+      return (usd[id] = h[4] * resolve(h[3], depth + 1));
+    };
+
+    const regions = ['Americas', 'Europe', 'Asia & Pacific', 'Middle East', 'Africa', 'Supranational'];
+    const groups = regions.map((r) => ({
+      name: 'Current — ' + r,
+      units: CURRENT.filter((c) => c[3] === r).map(([c, name]) => [name, c, usd[c], '', c])
+    }));
+    HISTORICAL.forEach((g) => groups.push({
+      name: g.name,
+      units: g.units.map(([id, name, years, , , note]) => [
+        name,
+        /^[A-Z]{3}$/.test(id) ? id : '',
+        resolve(id),
+        [years, note].filter(Boolean).join(' · '),
+        id
+      ])
+    }));
+    return groups;
+  }
+
+  const CATS = {
+    length: { label: 'Length', base: 'meter', desc: 'Distance and length — metric, imperial, nautical, typographic, astronomical and historical units.', groups: LENGTH, symLabel: 'Symbol' },
+    mass: { label: 'Weight & mass', base: 'kilogram', desc: 'Weight and mass — metric, avoirdupois, troy, atomic, astronomical and historical units.', groups: MASS, symLabel: 'Symbol' },
+    time: { label: 'Time', base: 'second', desc: 'Time — from the Planck time to the galactic year, including calendar, astronomical and historical units.', groups: TIME, symLabel: 'Symbol' },
+    currency: { label: 'Currency', base: 'USD', desc: 'Currencies of the world, present and past. Historical currencies convert at their official fixed rates into today\'s successor.', groups: null, symLabel: 'Code' },
+  };
+
+  // Normalise to { id, name, sym, f, note, group }. Units are keyed by name, currencies by id.
+  const unitsByCat = {};
+  function buildUnits(cat) {
+    const groups = cat === 'currency' ? buildCurrencyGroups() : CATS[cat].groups;
+    const list = [];
+    groups.forEach((g) => g.units.forEach(([name, sym, f, note, id]) => {
+      list.push({ id: id || name, name, sym: sym || '', f, note: note || '', group: g.name });
+    }));
+    unitsByCat[cat] = { list, byId: Object.fromEntries(list.map((u) => [u.id, u])) };
+  }
+  Object.keys(CATS).forEach(buildUnits);
+
+  // ---------- State ----------
+  const state = {
+    cat: store.get('cat', 'length'),
+    from: Object.assign({ length: 'meter', mass: 'kilogram', time: 'second', currency: 'USD' }, store.get('from', {})),
+    input: Object.assign({ length: '1', mass: '1', time: '1', currency: '1' }, store.get('input', {})),
+    prec: store.get('prec', 6),
+    q: ''
+  };
+  if (!CATS[state.cat]) state.cat = 'length';
+  Object.keys(CATS).forEach((c) => {
+    if (!unitsByCat[c].byId[state.from[c]]) state.from[c] = CATS[c].base;
+  });
+
+  // ---------- Formatting & parsing ----------
+  function trimMantissa(m) { return m.includes('.') ? m.replace(/\.?0+$/, '') : m; }
+  function fmt(n) {
+    if (!isFinite(n)) return '—';
+    if (n === 0) return '0';
+    const a = Math.abs(n);
+    if (a >= 1e-6 && a < 1e15) {
+      return n.toLocaleString(undefined, { maximumSignificantDigits: state.prec });
+    }
+    const [m, e] = n.toExponential(state.prec - 1).split('e');
+    return `${trimMantissa(m)}<span class="x">×</span>10<sup>${+e}</sup>`;
+  }
+  function plain(n) {
+    if (!isFinite(n)) return '';
+    return String(Number(n.toPrecision(state.prec)));
+  }
+  function parseInput(s) {
+    s = s.replace(/,/g, '').replace(/×/g, '*').replace(/÷/g, '/').trim();
+    if (!s) return NaN;
+    if (!/^[\d\s.+\-*/()eE^]+$/.test(s)) return NaN;
+    s = s.replace(/\^/g, '**');
+    try {
+      const r = Function('"use strict"; return (' + s + ');')();
+      return typeof r === 'number' ? r : NaN;
+    } catch (e) { return NaN; }
+  }
+
+  // ---------- Rendering ----------
+  const els = {
+    tabs: $('tabs'), desc: $('desc'), value: $('value'), from: $('from'), tbody: $('tbody'),
+    search: $('search'), prec: $('prec'), count: $('count'), symHead: $('symHead'),
+    status: $('status'), statusText: $('statusText'), refreshBtn: $('refreshBtn'), toast: $('toast')
+  };
+
+  function renderTabs() {
+    els.tabs.innerHTML = Object.entries(CATS).map(([k, c]) =>
+      `<button class="tab" role="tab" data-cat="${k}" aria-selected="${k === state.cat}">${esc(c.label)}</button>`
+    ).join('');
+  }
+
+  function renderSelect() {
+    const { list } = unitsByCat[state.cat];
+    let html = '';
+    let current = null;
+    list.forEach((u) => {
+      if (u.group !== current) {
+        if (current !== null) html += '</optgroup>';
+        current = u.group;
+        html += `<optgroup label="${esc(u.group)}">`;
+      }
+      const label = state.cat === 'currency'
+        ? (u.sym ? `${u.sym} — ${u.name}` : u.name)
+        : (u.sym ? `${u.name} (${u.sym})` : u.name);
+      html += `<option value="${esc(u.id)}">${esc(label)}</option>`;
+    });
+    if (current !== null) html += '</optgroup>';
+    els.from.innerHTML = html;
+    els.from.value = state.from[state.cat];
+  }
+
+  function renderTable() {
+    const cat = state.cat;
+    const { list, byId } = unitsByCat[cat];
+    const src = byId[state.from[cat]];
+    const amount = parseInput(state.input[cat]);
+    els.value.classList.toggle('invalid', !isFinite(amount));
+    const baseValue = amount * src.f;
+    const q = state.q.trim().toLowerCase();
+
+    const shown = q
+      ? list.filter((u) => (u.name + ' ' + u.sym + ' ' + u.group + ' ' + u.note + ' ' + u.id).toLowerCase().includes(q))
+      : list;
+
+    if (!shown.length) {
+      els.tbody.innerHTML = `<tr><td colspan="4" class="empty">No units match “${esc(state.q)}”.</td></tr>`;
+      els.count.textContent = `0 of ${list.length} units`;
+      return;
+    }
+
+    const counts = {};
+    shown.forEach((u) => { counts[u.group] = (counts[u.group] || 0) + 1; });
+
+    let html = '';
+    let current = null;
+    shown.forEach((u) => {
+      if (u.group !== current) {
+        current = u.group;
+        html += `<tr class="group"><th colspan="4">${esc(u.group)}<span>${counts[u.group]}</span></th></tr>`;
+      }
+      const v = baseValue / u.f;
+      html += `<tr class="unit${u.id === src.id ? ' is-source' : ''}" data-id="${esc(u.id)}" title="Use ${esc(u.name)} as the source unit">
+        <td class="name">${esc(u.name)}${u.note ? `<span class="note">${esc(u.note)}</span>` : ''}</td>
+        <td class="sym">${esc(u.sym)}</td>
+        <td class="val">${fmt(v)}</td>
+        <td class="act"><button class="copy" data-copy="${esc(plain(v))}" title="Copy value" aria-label="Copy value for ${esc(u.name)}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+        </button></td>
+      </tr>`;
+    });
+    els.tbody.innerHTML = html;
+    els.count.textContent = q ? `${shown.length} of ${list.length} units` : `${list.length} units`;
+  }
+
+  function renderCategory() {
+    const c = CATS[state.cat];
+    renderTabs();
+    els.desc.textContent = c.desc;
+    els.symHead.textContent = c.symLabel;
+    els.value.value = state.input[state.cat];
+    els.status.hidden = state.cat !== 'currency';
+    renderSelect();
+    renderTable();
+  }
+
+  function save() {
+    store.set('cat', state.cat);
+    store.set('from', state.from);
+    store.set('input', state.input);
+    store.set('prec', state.prec);
+  }
+
+  // ---------- Events ----------
+  els.tabs.addEventListener('click', (e) => {
+    const b = e.target.closest('.tab');
+    if (!b || b.dataset.cat === state.cat) return;
+    state.cat = b.dataset.cat;
+    state.q = '';
+    els.search.value = '';
+    renderCategory();
+    save();
+  });
+
+  els.value.addEventListener('input', () => {
+    state.input[state.cat] = els.value.value;
+    renderTable();
+    save();
+  });
+
+  els.from.addEventListener('change', () => {
+    state.from[state.cat] = els.from.value;
+    renderTable();
+    save();
+  });
+
+  els.search.addEventListener('input', () => {
+    state.q = els.search.value;
+    renderTable();
+  });
+
+  els.prec.value = String(state.prec);
+  els.prec.addEventListener('change', () => {
+    state.prec = +els.prec.value;
+    renderTable();
+    save();
+  });
+
+  let toastTimer;
+  function toast(msg) {
+    els.toast.textContent = msg;
+    els.toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => els.toast.classList.remove('show'), 1400);
+  }
+
+  async function copyText(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (e) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (err) {}
+      ta.remove();
+    }
+    toast('Copied ' + text);
+  }
+
+  // Clicking a row makes it the source unit while keeping the same quantity.
+  els.tbody.addEventListener('click', (e) => {
+    const copy = e.target.closest('.copy');
+    if (copy) {
+      e.stopPropagation();
+      if (copy.dataset.copy) copyText(copy.dataset.copy);
+      return;
+    }
+    const tr = e.target.closest('tr.unit');
+    if (!tr) return;
+    const cat = state.cat;
+    const { byId } = unitsByCat[cat];
+    const target = byId[tr.dataset.id];
+    const amount = parseInput(state.input[cat]);
+    if (isFinite(amount)) {
+      const v = amount * byId[state.from[cat]].f / target.f;
+      state.input[cat] = String(Number(v.toPrecision(12)));
+      els.value.value = state.input[cat];
+    }
+    state.from[cat] = target.id;
+    els.from.value = target.id;
+    renderTable();
+    save();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && document.activeElement !== els.search && !/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) {
+      e.preventDefault();
+      els.search.focus();
+    } else if (e.key === 'Escape' && document.activeElement === els.search) {
+      els.search.value = '';
+      state.q = '';
+      renderTable();
+      els.search.blur();
+    }
+  });
+
+  // ---------- Theme ----------
+  const root = document.documentElement;
+  const savedTheme = store.get('theme', null);
+  if (savedTheme) root.dataset.theme = savedTheme;
+  $('themeBtn').addEventListener('click', () => {
+    const isDark = root.dataset.theme
+      ? root.dataset.theme === 'dark'
+      : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme = isDark ? 'light' : 'dark';
+    store.set('theme', root.dataset.theme);
+  });
+
+  // ---------- Live exchange rates ----------
+  const RATES_URL = 'https://open.er-api.com/v6/latest/USD';
+  const RATES_MAX_AGE = 6 * 3600 * 1000;
+
+  function setStatus(kind, text) {
+    els.status.classList.toggle('live', kind === 'live');
+    els.statusText.textContent = text;
+  }
+
+  function applyRates(payload, stale) {
+    rates = { ...SNAPSHOT_RATES };
+    Object.keys(SNAPSHOT_RATES).forEach((c) => {
+      const r = payload.rates[c];
+      if (typeof r === 'number' && r > 0) rates[c] = r;
+    });
+    buildUnits('currency');
+    const when = payload.updated ? new Date(payload.updated).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) : 'recently';
+    setStatus('live', stale
+      ? `Offline — showing the last live rates you loaded (updated ${when}).`
+      : `Live exchange rates · updated ${when}`);
+    if (state.cat === 'currency') { renderSelect(); renderTable(); }
+  }
+
+  async function loadRates(force) {
+    const cached = store.get('rates', null);
+    if (!force && cached && Date.now() - cached.fetched < RATES_MAX_AGE) {
+      applyRates(cached);
+      return;
+    }
+    els.refreshBtn.disabled = true;
+    setStatus('loading', 'Fetching live exchange rates…');
+    try {
+      const res = await fetch(RATES_URL, { cache: 'no-store' });
+      const data = await res.json();
+      if (data.result !== 'success' || !data.rates) throw new Error('bad response');
+      const payload = { rates: data.rates, updated: data.time_last_update_utc, fetched: Date.now() };
+      store.set('rates', payload);
+      applyRates(payload);
+    } catch (e) {
+      if (cached) applyRates(cached, true);
+      else setStatus('offline', 'Offline — using built-in approximate rates (late-2025 snapshot). Connect to the internet and refresh for live rates.');
+    } finally {
+      els.refreshBtn.disabled = false;
+    }
+  }
+  els.refreshBtn.addEventListener('click', () => loadRates(true));
+
+  // ---------- Init ----------
+  setStatus('offline', 'Using built-in approximate rates (late-2025 snapshot).');
+  renderCategory();
+  loadRates(false);
+})();
+</script>
+</body>
+</html>
