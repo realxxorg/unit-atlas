@@ -713,6 +713,38 @@
     ]},
   ];
 
+  // Temperature scales are affine, not proportional: kelvin = value × f + o.
+  const C0 = 273.15;
+  const F5_9 = 5 / 9;
+  const deg = (name, sym, f, o, note) => [name, sym, f, note, undefined, o];
+  const TEMPERATURE = [
+    { name: 'Absolute (SI)', units: si('kelvin', 'K') },
+    { name: 'Common scales', units: [
+      deg('degree Celsius', '°C', 1, C0),
+      deg('degree Fahrenheit', '°F', F5_9, 459.67 * F5_9),
+      deg('degree Rankine', '°R', F5_9, 0),
+    ]},
+    { name: 'Historical scales', units: [
+      deg('degree Rømer', '°Rø', 40 / 21, C0 - 7.5 * 40 / 21, '1701'),
+      deg('degree Newton', '°N', 100 / 33, C0, 'c. 1701'),
+      deg('degree Réaumur', '°Ré', 1.25, C0, '1730'),
+      deg('degree Delisle', '°De', -2 / 3, C0 + 100, '1732, counts downward from boiling'),
+      deg('original Celsius (inverted)', '', -1, C0 + 100, '1742, 0 = boiling, 100 = freezing'),
+      deg('degree Wedgwood', '°W', 130 * F5_9, (1077.5 + 459.67) * F5_9, '1782 pottery pyrometer, approximate'),
+      deg('degree Leiden', '°L', 1, 20.15, 'c. 1894–1921, cryogenics'),
+    ]},
+    { name: 'Scientific & energy equivalents', units: [
+      deg('millielectronvolt (kT)', 'meV', 11.60451812, 0),
+      deg('electronvolt (kT)', 'eV', 11604.51812, 0, '1 eV / Boltzmann constant'),
+      deg('kiloelectronvolt (kT)', 'keV', 11604518.12, 0),
+      deg('megaelectronvolt (kT)', 'MeV', 11604518120, 0),
+      deg('Planck temperature', 'TP', 1.416784e32, 0),
+    ]},
+    { name: 'Cooking', units: [
+      deg('gas mark', 'GM', 25 * F5_9, (250 + 459.67) * F5_9, 'UK oven setting, accurate from gas mark 1 up'),
+    ]},
+  ];
+
   // ---------- Currency data ----------
   // Current currencies: [code, name, approx. units per 1 USD (offline snapshot), region]
   const CURRENT = [
@@ -995,25 +1027,31 @@
     mass: { label: 'Weight & mass', base: 'kilogram', desc: 'Weight and mass — metric, avoirdupois, troy, atomic, astronomical and historical units.', groups: MASS, symLabel: 'Symbol' },
     time: { label: 'Time', base: 'second', desc: 'Time — from the Planck time to the galactic year, including calendar, astronomical and historical units.', groups: TIME, symLabel: 'Symbol' },
     currency: { label: 'Currency', base: 'USD', desc: 'Currencies of the world, present and past. Historical currencies convert at their official fixed rates into today\'s successor.', groups: null, symLabel: 'Code' },
+    temperature: { label: 'Temperature', base: 'kelvin', desc: 'Temperature — modern, historical, scientific and cooking scales, from absolute zero to the Planck temperature.', groups: TEMPERATURE, symLabel: 'Symbol' },
   };
 
-  // Normalise to { id, name, sym, f, note, group }. Units are keyed by name, currencies by id.
+  // Normalise to { id, name, sym, f, o, note, group }. Units are keyed by name, currencies by id.
+  // `o` is an offset in the base unit; it is only non-zero for temperature scales.
   const unitsByCat = {};
   function buildUnits(cat) {
     const groups = cat === 'currency' ? buildCurrencyGroups() : CATS[cat].groups;
     const list = [];
-    groups.forEach((g) => g.units.forEach(([name, sym, f, note, id]) => {
-      list.push({ id: id || name, name, sym: sym || '', f, note: note || '', group: g.name });
+    groups.forEach((g) => g.units.forEach(([name, sym, f, note, id, o]) => {
+      list.push({ id: id || name, name, sym: sym || '', f, o: o || 0, note: note || '', group: g.name });
     }));
     unitsByCat[cat] = { list, byId: Object.fromEntries(list.map((u) => [u.id, u])) };
   }
   Object.keys(CATS).forEach(buildUnits);
 
+  const toBase = (u, x) => x * u.f + u.o;
+  // Snap float residue from offset subtraction (e.g. 0 °C → 2e-14 °Ré) to zero.
+  const fromBase = (u, b) => Math.abs(b - u.o) < 1e-12 * Math.abs(b) ? 0 : (b - u.o) / u.f;
+
   // ---------- State ----------
   const state = {
     cat: store.get('cat', 'length'),
-    from: Object.assign({ length: 'meter', mass: 'kilogram', time: 'second', currency: 'USD' }, store.get('from', {})),
-    input: Object.assign({ length: '1', mass: '1', time: '1', currency: '1' }, store.get('input', {})),
+    from: Object.assign({ length: 'meter', mass: 'kilogram', time: 'second', currency: 'USD', temperature: 'degree Celsius' }, store.get('from', {})),
+    input: Object.assign({ length: '1', mass: '1', time: '1', currency: '1', temperature: '20' }, store.get('input', {})),
     prec: store.get('prec', 6),
     q: ''
   };
@@ -1088,7 +1126,7 @@
     const src = byId[state.from[cat]];
     const amount = parseInput(state.input[cat]);
     els.value.classList.toggle('invalid', !isFinite(amount));
-    const baseValue = amount * src.f;
+    const baseValue = toBase(src, amount);
     const q = state.q.trim().toLowerCase();
 
     const shown = q
@@ -1111,7 +1149,7 @@
         current = u.group;
         html += `<tr class="group"><th colspan="4">${esc(u.group)}<span>${counts[u.group]}</span></th></tr>`;
       }
-      const v = baseValue / u.f;
+      const v = fromBase(u, baseValue);
       html += `<tr class="unit${u.id === src.id ? ' is-source' : ''}" data-id="${esc(u.id)}" title="Use ${esc(u.name)} as the source unit">
         <td class="name">${esc(u.name)}${u.note ? `<span class="note">${esc(u.note)}</span>` : ''}</td>
         <td class="sym">${esc(u.sym)}</td>
@@ -1217,7 +1255,7 @@
     const target = byId[tr.dataset.id];
     const amount = parseInput(state.input[cat]);
     if (isFinite(amount)) {
-      const v = amount * byId[state.from[cat]].f / target.f;
+      const v = fromBase(target, toBase(byId[state.from[cat]], amount));
       state.input[cat] = String(Number(v.toPrecision(12)));
       els.value.value = state.input[cat];
     }
